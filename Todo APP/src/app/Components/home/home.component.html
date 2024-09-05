@@ -1,0 +1,89 @@
+<app-navbar></app-navbar>
+<button class="btn btn-primary mt-3 mb-3" (click)="navigateToAddNewTodo()">Add</button>
+
+<!-- Filtering Inputs -->
+<div class="mb-3 d-flex w-100">
+  <input 
+    class="form-control mr-2" type="text" placeholder="Filter by ID" [(ngModel)]="filterId" (ngModelChange)="applyFilters()">
+  <input 
+    class="form-control mr-2" type="text" placeholder="Filter by Title" [(ngModel)]="filterTitle" (ngModelChange)="applyFilters()">
+  <input 
+    class="form-control mr-2" type="text" placeholder="Filter by UserID" [(ngModel)]="filterUserId" (ngModelChange)="applyFilters()">
+  <select 
+    class="form-control mr-2" [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()">
+    <option value="">Filter by Status</option>
+    <option value="completed">Completed</option>
+    <option value="pending">Pending</option>
+  </select>
+  <button class="btn btn-secondary mt-0 m-3" (click)="resetFilters()">Reset</button>
+</div>
+
+<!-- Table -->
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">ID</th>
+      <th scope="col">Title</th>
+      <th scope="col">Complete</th>
+      <th scope="col">UserID</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let todo of filteredTodos; let i = index">
+      <th scope="row">{{i+1}}</th>
+      <td>{{todo.id}}</td>
+      <td>{{todo.title}}</td>
+      <td>
+        <span [ngClass]="{'badge bg-success': todo.completed, 'badge bg-secondary': !todo.completed}">
+          {{ todo.completed ? 'Completed' : 'Pending' }}
+        </span>
+      </td>
+      <td>{{todo.userId}}</td>
+      <td>
+        <div class="icons-container">
+          <button (click)="openUpdateTodoForm(todo.id)" class="btn btn-warning text-white m-2">
+            <i class="fa-regular fa-pen-to-square"></i>
+          </button>
+          <button (click)="deleteTodo(todo.id)" class="btn btn-danger text-white">
+            <i class="fa-trash fa-regular"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Edit Todo Section -->
+<div *ngIf="singletodo" class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>Edit Todo</span>
+    <button class="btn btn-close" (click)="closeEditForm()"></button>
+  </div>
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="id">ID</label>
+        <input class="form-control" type="text" id="id" readonly [value]="singletodo.id">
+      </div>
+      <div class="col-md-6">
+        <label for="title">Title</label>
+        <input class="form-control" type="text" id="title" [(ngModel)]="singletodo.title">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="userid">UserID</label>
+        <input class="form-control" type="text" id="userid" [(ngModel)]="singletodo.userId">
+      </div>
+    </div>
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" id="completed" [(ngModel)]="singletodo.completed">
+      <label class="form-check-label" for="completed">
+        Completed
+      </label>
+    </div>
+    <button class="btn btn-primary" (click)="saveData()">Save</button>
+  </div>
+</div>
